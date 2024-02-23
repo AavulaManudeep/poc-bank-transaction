@@ -1,0 +1,99 @@
+  openapi: 3.1.0
+  info:
+    version: 0.0.1
+    title: poc-application-api
+    description: A Simple transaction api for bank poc
+  security:
+    - BasicAuth: [ ]
+  paths:
+    /purchase:
+      post:
+        summary: Returns confirmation and transactionID
+        description: Takes user card details and user info as a request payload and return transaction info.
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRequest'
+          required: true
+        responses:
+          '200':
+            description: Transaction is been processed successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/TransactionResponse'
+          default:
+            description: Transaction is been processed successfully
+
+  components:
+    schemas:
+      TransactionRequest:
+        type: object
+        properties:
+          transactionType:
+            type: string
+          transactionAmount:
+            type: double
+            #format: int32
+          transactionCategory:
+            type: string
+          merchantInfo:
+            $ref: '#/components/schemas/MerchantInfo'
+          cardDetails:
+            $ref: '#/components/schemas/CardDetails'
+
+      CardDetails:
+        type: object
+        properties:
+          name:
+            type: string
+          cardNumber:
+            type: integer
+          expiryDate:
+            type: string
+          cvv:
+            type: integer
+
+      MerchantInfo:
+        type: object
+        properties:
+          name:
+            type: string
+          merchantCategory:
+            type: string
+          address:
+            $ref: '#/components/schemas/Address'
+
+      Address:
+        type: object
+        properties:
+          address1:
+            type: string
+          address2:
+            type: string
+          city:
+            type: string
+          state:
+            type: string
+          zipCode:
+            type: integer
+
+      TransactionResponse:
+        type: object
+        properties:
+          transactionId:
+            type: integer
+          transactionDetails:
+            $ref: '#/components/schemas/TransactionDetails'
+
+      TransactionDetails:
+        type: object
+        properties:
+          transactionAmount:
+            type: double
+            #format: int32
+          merchantInfo:
+            $ref: '#/components/schemas/MerchantInfo'
+          transactionType:
+            type: string
