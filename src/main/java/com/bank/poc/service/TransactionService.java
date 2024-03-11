@@ -2,15 +2,32 @@ package com.bank.poc.service;
 
 import com.bank.poc.enumirator.TransactionType;
 import com.bank.poc.openapi.model.*;
+import com.bank.poc.subscriber.TransactionSubscriber;
 import com.bank.poc.util.TransactionUtil;
+import lombok.AllArgsConstructor;
+import org.apache.camel.CamelContext;
+import org.apache.camel.Produce;
+import org.apache.camel.ProducerTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+
 
 @Service
+@AllArgsConstructor
 public class TransactionService {
 
-    public TransactionResponse processTransaction(TransactionRequest transactionRequest) {
+    private final ProducerTemplate producerTemplate;
 
+    public TransactionResponse processTransaction(TransactionRequest transactionRequest) {
+        //camelContext.asyncSendBody("direct:test_camel","Test");
+        producerTemplate.asyncSendBody("direct:test_camel","Test");
         return getResponse();
+    }
+
+    public Mono<TransactionDetails> getTransactionDetails(String transactionId) {
+        Mono.fromSupplier(()-> new TransactionDetails()).subscribe(new TransactionSubscriber());
+        return  Mono.just(new TransactionDetails());
     }
 
     public TransactionResponse getResponse(){
@@ -30,7 +47,7 @@ public class TransactionService {
         address.setCity("city");
         address.setState("state");
         address.setZipCode(12345);
-        boolean val = TransactionUtil.isItCorrect();
+        var val = TransactionUtil.isItCorrect();
         return transactionResponse;
     }
 }

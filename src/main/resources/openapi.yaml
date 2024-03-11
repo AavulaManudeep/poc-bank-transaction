@@ -50,6 +50,7 @@
             type: string
           cardNumber:
             type: integer
+#            x-field-extra-annotation: "@com.bank.poc.customannotation.BankSensitiveData"
           expiryDate:
             type: string
           cvv:
